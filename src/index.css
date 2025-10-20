@@ -1,0 +1,15 @@
+:root {
+   color: rgba(255, 255, 255, 0.87);
+   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+   background-color: #242424;
+   justify-content: center;
+}
+
+body {
+   margin: 0;
+   display: flex;
+   place-items: center;
+   justify-content: center;
+   min-width: 320px;
+   min-height: 100vh;
+}
