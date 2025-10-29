@@ -1,13 +1,13 @@
+import { Button, TextField } from '@mui/material';
 import { useState } from 'react';
+import styled from 'styled-components';
+
 import { useAppDispatch } from '../hooks/hooks';
 import { todoSlice } from '../store/reducers/TodoSlice';
-import { Button, TextField } from '@mui/material';
 import {
    getLocalStorageItem,
    setLocalStorageItem,
 } from '../utils/localstorage';
-
-import styled from 'styled-components';
 
 const FormContainer = styled.form`
    display: flex;

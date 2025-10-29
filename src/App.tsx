@@ -1,10 +1,11 @@
-import AddTodo from './components/AddTodo';
-import TodoList from './components/TodoList';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { GlobalStyles } from './GlobalStyles';
-import { useEffect, useState } from 'react';
 import { Button } from '@mui/material';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+
+import { AddTodo, TodoList } from '@/components';
+
+import { GlobalStyles } from './GlobalStyles';
 
 const AppContainer = styled.div`
    top: 10%;

@@ -1,15 +1,16 @@
+import EditIcon from '@mui/icons-material/Edit';
+import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import {
    Checkbox,
    IconButton,
    ListItemButton,
    ListItemText,
 } from '@mui/material';
-import { IToDo } from '../models/IToDo';
-import { useAppDispatch } from '../hooks/hooks';
-import { todoSlice } from '../store/reducers/TodoSlice';
-import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
-import EditIcon from '@mui/icons-material/Edit';
 import styled from 'styled-components';
+
+import { useAppDispatch } from '../hooks/hooks';
+import { IToDo } from '../models/IToDo';
+import { todoSlice } from '../store/reducers/TodoSlice';
 
 const StyledIconButton = styled(IconButton)<{ $hoverColor: string }>`
    && {

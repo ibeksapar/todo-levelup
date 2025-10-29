@@ -7,8 +7,9 @@ import {
    TextField,
 } from '@mui/material';
 import { useState } from 'react';
-import { IToDo } from '../models/IToDo';
+
 import { useAppDispatch } from '../hooks/hooks';
+import { IToDo } from '../models/IToDo';
 import { todoSlice } from '../store/reducers/TodoSlice';
 
 function EditTodo({

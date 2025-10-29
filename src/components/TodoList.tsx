@@ -1,3 +1,4 @@
+import DeleteIcon from '@mui/icons-material/Delete';
 import {
    Button,
    Dialog,
@@ -9,14 +10,13 @@ import {
    MenuItem,
    Select,
 } from '@mui/material';
-import { useAppDispatch, useAppSelector } from '../hooks/hooks';
-import TodoItem from './TodoItem';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { useState } from 'react';
+import styled from 'styled-components';
+
+import { useAppDispatch, useAppSelector } from '../hooks/hooks';
 import { todoSlice } from '../store/reducers/TodoSlice';
 import EditTodo from './EditTodo';
-
-import styled from 'styled-components';
+import TodoItem from './TodoItem';
 
 const FiltersContainer = styled.div`
    display: flex;
