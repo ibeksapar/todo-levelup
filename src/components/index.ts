@@ -1,4 +1,4 @@
-export { default as AddTodo } from './AddTodo/AddTodo';
-export { default as EditTodo } from './EditTodo/EditTodo';
-export { default as TodoItem } from './TodoItem/TodoItem';
-export { default as TodoList } from './TodoList/TodoList';
+export { AddTodo } from './AddTodo/AddTodo';
+export { EditTodo } from './EditTodo/EditTodo';
+export { TodoItem } from './TodoItem/TodoItem';
+export { TodoList } from './TodoList/TodoList';

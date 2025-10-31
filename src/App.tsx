@@ -8,7 +8,7 @@ import { AppContainer } from './App.styled';
 import { GlobalStyles } from './GlobalStyles';
 import { getLocalStorageItem, setLocalStorageItem } from './utils/localstorage';
 
-function App() {
+export function App() {
    const [theme, setTheme] = useState<'light' | 'dark'>(
       getLocalStorageItem('theme', 'light')
    );
@@ -39,5 +39,3 @@ function App() {
       </ThemeProvider>
    );
 }
-
-export default App;

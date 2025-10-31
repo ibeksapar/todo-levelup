@@ -9,11 +9,16 @@ import {
 import { useState } from 'react';
 
 import { useAppDispatch } from '@/hooks/hooks';
+import { IToDo } from '@/models/IToDo';
 import { todoSlice } from '@/store/reducers/TodoSlice';
 
-import { EditTodoProps } from './EditTodo.types';
+type EditTodoProps = {
+   isOpen: boolean;
+   onClose: () => void;
+   todo: IToDo;
+};
 
-function EditTodo({ isOpen, onClose, todo }: EditTodoProps) {
+export function EditTodo({ isOpen, onClose, todo }: EditTodoProps) {
    const [editTask, setEditTask] = useState<string>(todo.task);
    const dispatch = useAppDispatch();
    const { editTodo } = todoSlice.actions;
@@ -54,5 +59,3 @@ function EditTodo({ isOpen, onClose, todo }: EditTodoProps) {
       </Dialog>
    );
 }
-
-export default EditTodo;

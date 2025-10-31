@@ -3,12 +3,17 @@ import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import { Checkbox, ListItemButton } from '@mui/material';
 
 import { useAppDispatch } from '@/hooks/hooks';
+import { IToDo } from '@/models/IToDo';
 import { todoSlice } from '@/store/reducers/TodoSlice';
 
 import { DeleteIconButton, EditIconButton, ItemText } from './TodoItem.styled';
-import { TodoItemProps } from './TodoItem.types';
 
-function TodoItem({ todo, onIsEditing }: TodoItemProps) {
+type TodoItemProps = {
+   todo: IToDo;
+   onIsEditing: (id: number) => void;
+};
+
+export function TodoItem({ todo, onIsEditing }: TodoItemProps) {
    const { id, task, completed } = todo;
    const { toggleTodo, deleteTodo } = todoSlice.actions;
    const dispatch = useAppDispatch();
@@ -43,5 +48,3 @@ function TodoItem({ todo, onIsEditing }: TodoItemProps) {
       </ListItemButton>
    );
 }
-
-export default TodoItem;

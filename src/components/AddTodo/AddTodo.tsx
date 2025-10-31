@@ -7,7 +7,7 @@ import { getLocalStorageItem, setLocalStorageItem } from '@/utils/localstorage';
 
 import { FormContainer } from './AddTodo.styled';
 
-function AddTodo() {
+export function AddTodo() {
    const [todo, setTodo] = useState<string>('');
    const { addTodo } = todoSlice.actions;
    const dispatch = useAppDispatch();
@@ -56,5 +56,3 @@ function AddTodo() {
       </div>
    );
 }
-
-export default AddTodo;

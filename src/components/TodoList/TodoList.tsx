@@ -15,9 +15,14 @@ import { useAppDispatch, useAppSelector } from '@/hooks/hooks';
 import { todoSlice } from '@/store/reducers/TodoSlice';
 
 import { FiltersContainer, SFormControl, SList } from './TodoList.styled';
-import { EditingType, FilterType, SortType } from './TodoList.types';
 
-function TodoList() {
+type EditingType = number | null;
+
+type SortType = 'new' | 'old';
+
+type FilterType = 'all' | 'done' | 'to-do';
+
+export function TodoList() {
    const { todos } = useAppSelector((state) => state.todoReducer);
    const { deleteAllTodos } = todoSlice.actions;
    const dispatch = useAppDispatch();
@@ -120,5 +125,3 @@ function TodoList() {
       </>
    );
 }
-
-export default TodoList;
