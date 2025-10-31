@@ -8,19 +8,12 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 
-import { useAppDispatch } from '../hooks/hooks';
-import { IToDo } from '../models/IToDo';
-import { todoSlice } from '../store/reducers/TodoSlice';
+import { useAppDispatch } from '@/hooks/hooks';
+import { todoSlice } from '@/store/reducers/TodoSlice';
 
-function EditTodo({
-   isOpen,
-   onClose,
-   todo,
-}: {
-   isOpen: boolean;
-   onClose: () => void;
-   todo: IToDo;
-}) {
+import { EditTodoProps } from './EditTodo.types';
+
+function EditTodo({ isOpen, onClose, todo }: EditTodoProps) {
    const [editTask, setEditTask] = useState<string>(todo.task);
    const dispatch = useAppDispatch();
    const { editTodo } = todoSlice.actions;

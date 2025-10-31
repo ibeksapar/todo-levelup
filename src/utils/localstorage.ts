@@ -1,4 +1,4 @@
-export function setLocalStorageItem(key: string, action: object) {
+export function setLocalStorageItem<T>(key: string, action: T) {
    localStorage.setItem(key, JSON.stringify(action));
 }
 

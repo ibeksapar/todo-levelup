@@ -1,27 +1,21 @@
 import { Button } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useEffect, useState } from 'react';
-import styled from 'styled-components';
 
 import { AddTodo, TodoList } from '@/components';
 
+import { AppContainer } from './App.styled';
 import { GlobalStyles } from './GlobalStyles';
-
-const AppContainer = styled.div`
-   top: 10%;
-   display: flex;
-   flex-direction: column;
-   gap: 20px;
-`;
+import { getLocalStorageItem, setLocalStorageItem } from './utils/localstorage';
 
 function App() {
    const [theme, setTheme] = useState<'light' | 'dark'>(
-      (localStorage.getItem('theme') as 'light' | 'dark') || 'light'
+      getLocalStorageItem('theme', 'light')
    );
 
    useEffect(() => {
       document.documentElement.setAttribute('data-theme', theme);
-      localStorage.setItem('theme', theme);
+      setLocalStorageItem('theme', theme);
    }, [theme]);
 
    const muiTheme = createTheme({

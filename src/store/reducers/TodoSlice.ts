@@ -1,17 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { IToDo } from '../../models/IToDo';
+import { IToDo } from '@/models/IToDo';
 import {
+   getLocalStorageItem,
    removeLocalStorageItem,
    setLocalStorageItem,
-} from '../../utils/localstorage';
+} from '@/utils/localstorage';
 
 interface TodoState {
    todos: IToDo[];
 }
 
 const initialState: TodoState = {
-   todos: JSON.parse(localStorage.getItem('todos') || '[]'),
+   todos: getLocalStorageItem('todos', []),
 };
 
 export const todoSlice = createSlice({

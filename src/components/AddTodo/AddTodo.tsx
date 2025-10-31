@@ -1,31 +1,11 @@
 import { Button, TextField } from '@mui/material';
 import { useState } from 'react';
-import styled from 'styled-components';
 
-import { useAppDispatch } from '../hooks/hooks';
-import { todoSlice } from '../store/reducers/TodoSlice';
-import {
-   getLocalStorageItem,
-   setLocalStorageItem,
-} from '../utils/localstorage';
+import { useAppDispatch } from '@/hooks/hooks';
+import { todoSlice } from '@/store/reducers/TodoSlice';
+import { getLocalStorageItem, setLocalStorageItem } from '@/utils/localstorage';
 
-const FormContainer = styled.form`
-   display: flex;
-   gap: 16px;
-`;
-
-const SubmitButton = styled(Button)`
-   && {
-      transition: all 0.2s ease;
-
-      &:hover,
-      &:focus-visible {
-         color: rgba(255, 255, 255, 0.87);
-         border-color: #42a5f5;
-         background-color: #42a5f5;
-      }
-   }
-`;
+import { FormContainer } from './AddTodo.styled';
 
 function AddTodo() {
    const [todo, setTodo] = useState<string>('');
@@ -69,9 +49,9 @@ function AddTodo() {
                onChange={(e) => setTodo(e.target.value)}
             />
 
-            <SubmitButton variant='outlined' type='submit'>
+            <Button variant='outlined' type='submit'>
                Add Task
-            </SubmitButton>
+            </Button>
          </FormContainer>
       </div>
    );

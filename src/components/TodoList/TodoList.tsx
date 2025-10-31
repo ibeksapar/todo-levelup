@@ -4,52 +4,27 @@ import {
    Dialog,
    DialogActions,
    DialogTitle,
-   FormControl,
    InputLabel,
-   List,
    MenuItem,
    Select,
 } from '@mui/material';
 import { useState } from 'react';
-import styled from 'styled-components';
 
-import { useAppDispatch, useAppSelector } from '../hooks/hooks';
-import { todoSlice } from '../store/reducers/TodoSlice';
-import EditTodo from './EditTodo';
-import TodoItem from './TodoItem';
+import { EditTodo, TodoItem } from '@/components/';
+import { useAppDispatch, useAppSelector } from '@/hooks/hooks';
+import { todoSlice } from '@/store/reducers/TodoSlice';
 
-const FiltersContainer = styled.div`
-   display: flex;
-   justify-content: space-between;
-`;
-
-const StyledList = styled(List)`
-   && {
-      max-height: 200px;
-      overflow-y: auto;
-
-      &::-webkit-scrollbar {
-         width: 4px;
-      }
-      &::-webkit-scrollbar-thumb {
-         background-color: #bababa;
-         border-radius: 4px;
-      }
-      &::-webkit-scrollbar-track {
-         background-color: rgba(255, 255, 255, 0.1);
-         border-radius: 4px;
-      }
-   }
-`;
+import { FiltersContainer, SFormControl, SList } from './TodoList.styled';
+import { EditingType, FilterType, SortType } from './TodoList.types';
 
 function TodoList() {
    const { todos } = useAppSelector((state) => state.todoReducer);
    const { deleteAllTodos } = todoSlice.actions;
    const dispatch = useAppDispatch();
 
-   const [isEditing, setIsEditing] = useState<number | null>(null);
-   const [sortBy, setSortBy] = useState<'new' | 'old'>('new');
-   const [filterBy, setFilterBy] = useState<'all' | 'done' | 'to-do'>('all');
+   const [isEditing, setIsEditing] = useState<EditingType>(null);
+   const [sortBy, setSortBy] = useState<SortType>('new');
+   const [filterBy, setFilterBy] = useState<FilterType>('all');
    const [open, setOpen] = useState<boolean>(false);
    const selectedTodo = todos.find((todo) => todo.id === isEditing);
 
@@ -72,7 +47,7 @@ function TodoList() {
          <FiltersContainer
             style={{ display: 'flex', justifyContent: 'space-between' }}
          >
-            <FormControl sx={{ m: 1, minWidth: 120 }} size='small'>
+            <SFormControl size='small'>
                <InputLabel id='filter-label'>Filter</InputLabel>
                <Select
                   labelId='filter-label'
@@ -85,8 +60,8 @@ function TodoList() {
                   <MenuItem value='to-do'>To do</MenuItem>
                   <MenuItem value='all'>All</MenuItem>
                </Select>
-            </FormControl>
-            <FormControl sx={{ m: 1, minWidth: 120 }} size='small'>
+            </SFormControl>
+            <SFormControl size='small'>
                <InputLabel id='sort-label'>Sort</InputLabel>
                <Select
                   labelId='sort-label'
@@ -98,9 +73,9 @@ function TodoList() {
                   <MenuItem value='new'>New</MenuItem>
                   <MenuItem value='old'>Old</MenuItem>
                </Select>
-            </FormControl>
+            </SFormControl>
          </FiltersContainer>
-         <StyledList>
+         <SList>
             {sorted.map((todo) => (
                <TodoItem key={todo.id} todo={todo} onIsEditing={setIsEditing} />
             ))}
@@ -112,7 +87,7 @@ function TodoList() {
                   todo={selectedTodo}
                />
             )}
-         </StyledList>
+         </SList>
          {sorted.length > 0 && (
             <Button
                onClick={handleOpen}
