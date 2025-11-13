@@ -1,6 +1,6 @@
 export interface IToDo {
    id: number;
-   task: string;
+   text: string;
    completed: boolean;
    createdAt: number;
 }

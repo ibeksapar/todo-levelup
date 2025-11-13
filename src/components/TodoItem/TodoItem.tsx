@@ -4,7 +4,7 @@ import { Checkbox, ListItemButton } from '@mui/material';
 
 import { useAppDispatch } from '@/hooks/hooks';
 import { IToDo } from '@/models/IToDo';
-import { todoSlice } from '@/store/reducers/TodoSlice';
+import { deleteTodoThunk, toggleTodoThunk } from '@/store/reducers/todoSlice';
 
 import { DeleteIconButton, EditIconButton, ItemText } from './TodoItem.styled';
 
@@ -14,16 +14,16 @@ type TodoItemProps = {
 };
 
 export function TodoItem({ todo, onIsEditing }: TodoItemProps) {
-   const { id, task, completed } = todo;
-   const { toggleTodo, deleteTodo } = todoSlice.actions;
+   const { id, text, completed: todoChecked } = todo;
+   // const { deleteTodo } = todoSlice.actions;
    const dispatch = useAppDispatch();
 
    return (
-      <ListItemButton onClick={() => dispatch(toggleTodo(id))}>
-         <Checkbox checked={completed} />
+      <ListItemButton onClick={() => dispatch(toggleTodoThunk(id))}>
+         <Checkbox checked={todoChecked} />
          <ItemText
-            primary={task}
-            style={completed ? { textDecoration: 'line-through' } : {}}
+            primary={text}
+            style={todoChecked ? { textDecoration: 'line-through' } : {}}
          />
          <EditIconButton
             onClick={(e) => {
@@ -36,7 +36,7 @@ export function TodoItem({ todo, onIsEditing }: TodoItemProps) {
          <DeleteIconButton
             onClick={(e) => {
                e.stopPropagation();
-               dispatch(deleteTodo(id));
+               dispatch(deleteTodoThunk(id));
             }}
          >
             <RemoveCircleIcon

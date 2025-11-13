@@ -2,51 +2,42 @@ import { Button, TextField } from '@mui/material';
 import { useState } from 'react';
 
 import { useAppDispatch } from '@/hooks/hooks';
-import { todoSlice } from '@/store/reducers/TodoSlice';
-import { getLocalStorageItem, setLocalStorageItem } from '@/utils/localstorage';
+import { createTodoThunk } from '@/store/reducers/todoSlice';
 
 import { FormContainer } from './AddTodo.styled';
 
 export function AddTodo() {
-   const [todo, setTodo] = useState<string>('');
-   const { addTodo } = todoSlice.actions;
+   const [text, setText] = useState<string>('');
    const dispatch = useAppDispatch();
    const [error, setError] = useState<boolean>(false);
 
    function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
       e.preventDefault();
 
-      if (!todo || todo.length > 100) {
+      if (!text || text.length > 100) {
          setError(true);
          return;
       }
 
-      const todoObj = {
-         id: Date.now() * Math.random(),
-         task: todo,
-         completed: false,
-         createdAt: Date.now(),
-      };
+      // const stored = getLocalStorageItem('todos', []);
+      // const updated = [...stored, todoObj];
 
-      const stored = getLocalStorageItem('todos', []);
-      const updated = [...stored, todoObj];
-
-      setLocalStorageItem('todos', updated);
-      dispatch(addTodo(todoObj));
+      // setLocalStorageItem('todos', updated);
+      dispatch(createTodoThunk(text));
       setError(false);
-      setTodo('');
+      setText('');
    }
 
    return (
       <div>
          <FormContainer onSubmit={handleSubmit}>
             <TextField
-               error={error && !todo}
+               error={error && !text}
                label='New task'
                variant='standard'
-               value={todo}
-               helperText={error && !todo ? 'Invalid entry' : ''}
-               onChange={(e) => setTodo(e.target.value)}
+               value={text}
+               helperText={error && !text ? 'Invalid entry' : ''}
+               onChange={(e) => setText(e.target.value)}
             />
 
             <Button variant='outlined' type='submit'>
