@@ -19,10 +19,6 @@ export function AddTodo() {
          return;
       }
 
-      // const stored = getLocalStorageItem('todos', []);
-      // const updated = [...stored, todoObj];
-
-      // setLocalStorageItem('todos', updated);
       dispatch(createTodoThunk(text));
       setError(false);
       setText('');
