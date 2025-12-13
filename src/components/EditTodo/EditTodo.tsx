@@ -10,7 +10,7 @@ import { useState } from 'react';
 
 import { useAppDispatch } from '@/hooks/hooks';
 import { IToDo } from '@/models/IToDo';
-import { todoSlice } from '@/store/reducers/TodoSlice';
+import { updateTodoThunk } from '@/store/reducers/todoSlice';
 
 type EditTodoProps = {
    isOpen: boolean;
@@ -19,9 +19,8 @@ type EditTodoProps = {
 };
 
 export function EditTodo({ isOpen, onClose, todo }: EditTodoProps) {
-   const [editTask, setEditTask] = useState<string>(todo.task);
+   const [editTask, setEditTask] = useState<string>(todo.text);
    const dispatch = useAppDispatch();
-   const { editTodo } = todoSlice.actions;
    const [error, setError] = useState<boolean>(false);
 
    function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -32,7 +31,12 @@ export function EditTodo({ isOpen, onClose, todo }: EditTodoProps) {
          return;
       }
 
-      dispatch(editTodo({ id: todo.id, task: editTask }));
+      dispatch(
+         updateTodoThunk({
+            id: todo.id,
+            updates: { text: editTask },
+         })
+      );
       setError(false);
       onClose();
    }
