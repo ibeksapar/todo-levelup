@@ -8,6 +8,9 @@ export const GlobalStyles = createGlobalStyle`
     --danger-color: #ff4d4d;
     --scrollbar-thumb: #bababa;
     --scrollbar-track: rgba(0, 0, 0, 0.1);
+    --input-bg: #ffffff;
+    --input-border: rgba(0, 0, 0, 0.23);
+    --input-placeholder: rgba(0, 0, 0, 0.4);
   }
 
   [data-theme='dark'] {
@@ -17,6 +20,9 @@ export const GlobalStyles = createGlobalStyle`
     --danger-color: #ff4d4d;
     --scrollbar-thumb: #bababa;
     --scrollbar-track: rgba(255, 255, 255, 0.1);
+    --input-bg: #1e1e1e;
+    --input-border: rgba(255, 255, 255, 0.15);
+    --input-placeholder: rgba(255, 255, 255, 0.4);
   }
 
   body {
