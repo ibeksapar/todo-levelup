@@ -15,7 +15,6 @@ type TodoItemProps = {
 
 export function TodoItem({ todo, onIsEditing }: TodoItemProps) {
    const { id, text, completed: todoChecked } = todo;
-   // const { deleteTodo } = todoSlice.actions;
    const dispatch = useAppDispatch();
 
    return (

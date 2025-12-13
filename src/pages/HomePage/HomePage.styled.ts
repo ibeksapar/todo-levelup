@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const AppContainer = styled.div`
+export const HomePageContainer = styled.div`
    top: 10%;
    display: flex;
    flex-direction: column;
