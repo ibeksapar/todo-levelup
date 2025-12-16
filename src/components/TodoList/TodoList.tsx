@@ -52,11 +52,23 @@ export function TodoList() {
    const handleClose = () => setOpen(false);
 
    const handlePageChange = (e: React.ChangeEvent<unknown>, value: number) => {
-      dispatch(fetchTodosList({ page: value, limit, filter: filterBy }));
+      dispatch(
+         fetchTodosList({
+            page: value,
+            limit,
+            filter: filterBy,
+         })
+      );
    };
 
    useEffect(() => {
-      dispatch(fetchTodosList({ page: 1, limit, filter: filterBy }));
+      dispatch(
+         fetchTodosList({
+            page: 1,
+            limit,
+            filter: filterBy,
+         })
+      );
    }, [dispatch, limit, filterBy]);
 
    return (

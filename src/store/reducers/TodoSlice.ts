@@ -10,6 +10,8 @@ import {
 } from '@/api/todos';
 import { IToDo } from '@/models/IToDo';
 
+import { RootState } from '../store';
+
 interface TodoState {
    todos: IToDo[];
    status: null | 'fulfilled' | 'pending' | 'rejected';
@@ -22,26 +24,35 @@ interface TodoState {
 
 export const fetchTodosList = createAsyncThunk<
    FetchTodoResponse,
-   { page: number; limit: number; filter: 'active' | 'completed' | 'all' },
-   { rejectValue: string }
->('todos/fetchTodos', async ({ page, limit, filter }, { rejectWithValue }) => {
-   try {
-      const data = await fetchTodos(page, limit, filter);
-      console.log(data);
-      return data;
-   } catch {
-      return rejectWithValue('Error with getting data from server');
+   {
+      page: number;
+      limit: number;
+      filter: 'active' | 'completed' | 'all';
+   },
+   { state: RootState; rejectValue: string }
+>(
+   'todos/fetchTodos',
+   async ({ page, limit, filter }, { getState, rejectWithValue }) => {
+      try {
+         const token = getState().authReducer.token;
+         if (!token) return rejectWithValue('No auth token');
+         const data = await fetchTodos(page, limit, filter, token);
+         return data;
+      } catch {
+         return rejectWithValue('Error with getting data from server');
+      }
    }
-});
+);
 
 export const createTodoThunk = createAsyncThunk<
    IToDo,
    string,
-   { rejectValue: string }
->('todos/createTodo', async (text, { rejectWithValue, dispatch }) => {
+   { state: RootState; rejectValue: string }
+>('todos/createTodo', async (text, { getState, rejectWithValue }) => {
    try {
-      const data = await createTodo(text);
-      dispatch(addTodo(data));
+      const token = getState().authReducer.token;
+      if (!token) return rejectWithValue('No auth token');
+      const data = await createTodo(text, token);
       return data;
    } catch {
       return rejectWithValue('Creating todo error');
@@ -50,19 +61,19 @@ export const createTodoThunk = createAsyncThunk<
 
 export const updateTodoThunk = createAsyncThunk<
    IToDo,
-   { id: number; updates: { text?: string; completed?: boolean } },
-   { rejectValue: string }
+   {
+      id: number;
+      updates: { text?: string; completed?: boolean };
+   },
+   { state: RootState; rejectValue: string }
 >(
    'todos/updateTodo',
-   async ({ id, updates }, { rejectWithValue, dispatch }) => {
+   async ({ id, updates }, { getState, rejectWithValue }) => {
       try {
-         const updatedTodo = await updateTodo(id, updates);
-         if (typeof updates.completed === 'boolean') {
-            dispatch(toggleTodo(updatedTodo));
-         }
+         const token = getState().authReducer.token;
+         if (!token) return rejectWithValue('No auth token');
 
-         if (updates.text) dispatch(editTodo(updatedTodo));
-         return updatedTodo;
+         return await updateTodo(id, updates, token);
       } catch {
          return rejectWithValue('Edit todo error');
       }
@@ -72,10 +83,12 @@ export const updateTodoThunk = createAsyncThunk<
 export const deleteTodoThunk = createAsyncThunk<
    number,
    number,
-   { rejectValue: string }
->('todos/deleteTodo', async (id, { rejectWithValue }) => {
+   { state: RootState; rejectValue: string }
+>('todos/deleteTodo', async (id, { getState, rejectWithValue }) => {
    try {
-      await removeTodo(id);
+      const token = getState().authReducer.token;
+      if (!token) return rejectWithValue('No auth token');
+      await removeTodo(id, token);
       return id;
    } catch {
       return rejectWithValue('Delete todo error');
@@ -83,13 +96,14 @@ export const deleteTodoThunk = createAsyncThunk<
 });
 
 export const toggleTodoThunk = createAsyncThunk<
+   IToDo,
    number,
-   number,
-   { rejectValue: string }
->('todos/toggleTodo', async (id, { rejectWithValue }) => {
+   { state: RootState; rejectValue: string }
+>('todos/toggleTodo', async (id, { getState, rejectWithValue }) => {
    try {
-      await toggleTodoStatus(id);
-      return id;
+      const token = getState().authReducer.token;
+      if (!token) return rejectWithValue('No auth token');
+      return await toggleTodoStatus(id, token);
    } catch {
       return rejectWithValue('Toggle todo error');
    }
@@ -109,23 +123,6 @@ export const todoSlice = createSlice({
    name: 'todos',
    initialState,
    reducers: {
-      addTodo: (state, action) => {
-         state.todos.push(action.payload);
-      },
-
-      toggleTodo: (state, action) => {
-         const toggleItem = state.todos.find(
-            (todo) => todo.id === action.payload.id
-         );
-         if (toggleItem) toggleItem.completed = action.payload.completed;
-      },
-
-      editTodo: (state, action) => {
-         const { id, text } = action.payload.data;
-         const editItem = state.todos.find((todo) => todo.id === id);
-         if (editItem) editItem.text = text;
-      },
-
       deleteAllTodos: (state) => {
          state.todos = [];
       },
@@ -151,20 +148,28 @@ export const todoSlice = createSlice({
                ? action.payload
                : 'Unknown error';
       });
+      builder.addCase(createTodoThunk.fulfilled, (state, action) => {
+         state.todos.unshift(action.payload);
+      });
+      builder.addCase(updateTodoThunk.fulfilled, (state, action) => {
+         const index = state.todos.findIndex(
+            (todo) => todo.id === action.payload.id
+         );
+         if (index !== -1) state.todos[index] = action.payload;
+      });
       builder.addCase(deleteTodoThunk.fulfilled, (state, action) => {
          state.status = 'fulfilled';
          state.error = null;
          state.todos = state.todos.filter((todo) => todo.id !== action.payload);
       });
       builder.addCase(toggleTodoThunk.fulfilled, (state, action) => {
-         const todoItem = state.todos.find(
-            (todo) => todo.id === action.payload
+         const index = state.todos.findIndex(
+            (todo) => todo.id === action.payload.id
          );
-         if (todoItem) todoItem.completed = !todoItem.completed;
+         if (index !== -1) state.todos[index] = action.payload;
       });
    },
 });
 
-export const { addTodo, toggleTodo, editTodo, deleteAllTodos } =
-   todoSlice.actions;
+export const { deleteAllTodos } = todoSlice.actions;
 export default todoSlice.reducer;
