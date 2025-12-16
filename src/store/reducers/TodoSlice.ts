@@ -35,10 +35,8 @@ export const fetchTodosList = createAsyncThunk<
    async ({ page, limit, filter }, { getState, rejectWithValue }) => {
       try {
          const token = getState().authReducer.token;
-         console.log(token);
          if (!token) return rejectWithValue('No auth token');
          const data = await fetchTodos(page, limit, filter, token);
-         console.log(data);
          return data;
       } catch {
          return rejectWithValue('Error with getting data from server');

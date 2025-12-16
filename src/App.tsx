@@ -1,19 +1,19 @@
 import { Route, Routes } from 'react-router-dom';
 
-import { Header } from './components/Header/Header';
-import { HomePage } from './pages/HomePage/HomePage';
-import { LoginForm } from './pages/LoginForm';
-import { NotFoundPage } from './pages/NotFoundPage';
-import { PrivateRoutes } from './pages/PrivateRoutes';
-import { ProfilePage } from './pages/ProfilePage';
-import { RegisterForm } from './pages/RegisterForm';
-import { AuthInitializer } from './providers/AuthInitializer';
+import { Header } from '@/components';
+import {
+   HomePage,
+   LoginForm,
+   NotFoundPage,
+   PrivateRoutes,
+   ProfilePage,
+   RegisterForm,
+} from '@/pages';
 
 function App() {
    return (
       <>
          <Header />
-         <AuthInitializer />
          <Routes>
             <Route element={<PrivateRoutes />}>
                <Route path='/' element={<HomePage />} />

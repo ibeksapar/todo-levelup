@@ -1,101 +1,131 @@
-import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 
-import { useAppDispatch, useAppSelector } from '@/hooks/hooks';
-import { changePasswordThunk } from '@/store/reducers/authSlice';
+import { SForm } from '@/pages';
+import {
+   useChangePasswordMutation,
+   useGetUserDataQuery,
+} from '@/services/auth/authApi';
+import { getErrorMessage } from '@/utils/errors';
 
-import { SForm } from './Form.styled';
+type PasswordsFormValues = {
+   oldPassword: string;
+   newPassword: string;
+   confirmPassword: string;
+};
 
 export function ProfilePage() {
-   const { user, status, error } = useAppSelector((state) => state.authReducer);
-   const [oldPassword, setOldPassword] = useState('');
-   const [newPassword, setNewPassword] = useState('');
-   const [confirmPassword, setConfirmPassword] = useState('');
-   const [localError, setLocalError] = useState('');
-   const dispatch = useAppDispatch();
+   const {
+      register,
+      handleSubmit,
+      getValues,
+      reset,
+      formState: { errors },
+   } = useForm<PasswordsFormValues>();
+   const { data, isLoading: isLoadingUserData } = useGetUserDataQuery();
+   const [
+      changePassword,
+      { error: changePasswordError, isLoading: isChangingPassword },
+   ] = useChangePasswordMutation();
 
-   if (!user) return;
-   const { email, age, createdAt } = user;
+   if (!data) return null;
+   const { email, age, createdAt } = data;
    const dateOfRegistration = new Date(createdAt).toLocaleDateString();
 
-   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-      e.preventDefault();
-      setLocalError('');
-
-      if (!oldPassword || !newPassword || !confirmPassword) {
-         setLocalError('All fields are required');
-         return;
+   async function onSubmit(data: PasswordsFormValues) {
+      const { oldPassword, newPassword } = data;
+      try {
+         await changePassword({ oldPassword, newPassword }).unwrap();
+         reset();
+      } catch (error) {
+         void error;
       }
-
-      if (newPassword.length < 6) {
-         setLocalError('New password must be at least 6 characters');
-         return;
-      }
-
-      if (newPassword !== confirmPassword) {
-         setLocalError('New passwords do not match');
-         return;
-      }
-
-      if (oldPassword === newPassword) {
-         setLocalError('New password must be different from old password');
-         return;
-      }
-
-      dispatch(changePasswordThunk({ oldPassword, newPassword }));
    }
 
    return (
       <div>
-         <div>
-            <ul>
-               <li>
-                  <span>Email</span>
-                  <p>{email}</p>
-               </li>
-               <li>
-                  <span>Age</span>
-                  <p>{age}</p>
-               </li>
-               <li>
-                  <span>Date of registration</span>
-                  <p>{dateOfRegistration}</p>
-               </li>
-            </ul>
-         </div>
-         <SForm method='post' onSubmit={handleSubmit}>
-            <label htmlFor='old'>Old password</label>
-            <input
-               id='old'
-               type='password'
-               value={oldPassword}
-               onChange={(e) => setOldPassword(e.target.value)}
-               required
-            />
+         {isLoadingUserData ? (
+            <div>'Loading...'</div>
+         ) : (
+            <div>
+               <ul>
+                  <li>
+                     <span>Email</span>
+                     <p>{email}</p>
+                  </li>
+                  <li>
+                     <span>Age</span>
+                     <p>{age}</p>
+                  </li>
+                  <li>
+                     <span>Date of registration</span>
+                     <p>{dateOfRegistration}</p>
+                  </li>
+               </ul>
+            </div>
+         )}
 
-            <label htmlFor='new'>New password</label>
-            <input
-               id='new'
-               type='password'
-               value={newPassword}
-               onChange={(e) => setNewPassword(e.target.value)}
-               required
-            />
+         <SForm onSubmit={handleSubmit(onSubmit)}>
+            <div>
+               <label htmlFor='oldPassword'>Old password</label>
+               <input
+                  id='oldPassword'
+                  type='password'
+                  disabled={isChangingPassword}
+                  {...register('oldPassword', {
+                     required: 'This field is required',
+                  })}
+               />
+               {errors?.oldPassword?.message && (
+                  <p className='error'>{errors.oldPassword.message}</p>
+               )}
+            </div>
 
-            <label htmlFor='confirm'>Confirm password</label>
-            <input
-               id='confirm'
-               type='password'
-               value={confirmPassword}
-               onChange={(e) => setConfirmPassword(e.target.value)}
-               required
-            />
+            <div>
+               <label htmlFor='newPassword'>New password</label>
+               <input
+                  id='newPassword'
+                  type='password'
+                  disabled={isChangingPassword}
+                  {...register('newPassword', {
+                     required: 'This field is required',
+                     minLength: {
+                        value: 6,
+                        message: 'Password must be at least 6 characters',
+                     },
+                  })}
+               />
+               {errors?.newPassword?.message && (
+                  <p className='error'>{errors.newPassword.message}</p>
+               )}
+            </div>
 
-            {localError && <p className='error'>{localError}</p>}
-            {error && status === 'failed' && (
-               <p className='error'>Server error: {error}</p>
+            <div>
+               <label htmlFor='confirmPassword'>Confirm password</label>
+               <input
+                  id='confirmPassword'
+                  type='password'
+                  disabled={isChangingPassword}
+                  {...register('confirmPassword', {
+                     required: 'This field is required',
+                     validate: (value) =>
+                        value === getValues().newPassword ||
+                        'New passwords do not match',
+                  })}
+               />
+               {errors?.confirmPassword?.message && (
+                  <p className='error'>{errors.confirmPassword.message}</p>
+               )}
+            </div>
+
+            {changePasswordError && (
+               <p className='error'>
+                  Server error: {getErrorMessage(changePasswordError)}
+               </p>
             )}
 
-            <button type='submit'>Change password</button>
+            <button type='submit' disabled={isChangingPassword}>
+               {isChangingPassword ? 'Loading' : 'Change password'}
+            </button>
          </SForm>
       </div>
    );

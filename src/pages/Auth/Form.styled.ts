@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const SForm = styled.form`
    display: flex;
    flex-direction: column;
-   gap: 14px;
+   gap: 16px;
    max-width: 320px;
    width: 100%;
 
@@ -48,7 +48,15 @@ export const SForm = styled.form`
       }
    }
 
+   div {
+      display: flex;
+      gap: 8px;
+      flex-direction: column;
+   }
+
    p.error {
+      margin: -2px 0 0;
+      font-size: 12px;
       color: #ff4d4dff;
    }
 
